@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-interface IUser {
+export interface IUser {
   name: string;
   email: string;
-  password: string;
-  roles: string;
+  password?: string;
+  role: string;
   skills: string[];
 }
 const userSchema = new mongoose.Schema(
@@ -21,12 +21,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    roles: {
+    role: {
       type: String,
       enum: ["user", "admin", "moderator"],
       default: "user",
     },
-    skills: [String],
+    skills: { type: [String], default: [] },
   },
   {
     timestamps: true,

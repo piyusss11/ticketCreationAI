@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-interface ITicket {
+export interface ITicket {
   title: string;
   description: string;
   status: string;
