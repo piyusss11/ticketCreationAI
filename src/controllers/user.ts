@@ -137,8 +137,26 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.find().select("-password");
-    res.status(200).json({ users, message: "Users fetched successfully" });
+    const skip = Number.isNaN(Number(req.query.skip))
+      ? 0
+      : parseInt(req.query.skip as string, 10); // for situation like "abc" => NaN & undefined → NaN
+
+    let limit = Number.isNaN(Number(req.query.limit))
+      ? 10
+      : parseInt(req.query.limit as string, 10);
+    limit = parseInt(req.query.limit as string) || 10;
+    if (limit > 50) {
+      limit = 50;
+    }
+
+    const users = await User.find().select("-password").skip(skip).limit(limit);
+    const total = await User.countDocuments();
+
+    res.status(200).json({
+      users,
+      TotalUsers: total,
+      message: "Users fetched successfully",
+    });
   } catch (error) {
     if (error instanceof Error) {
       res
